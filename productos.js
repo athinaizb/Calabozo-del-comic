@@ -25,7 +25,7 @@ comics.forEach(comic => {
             iconColor: '#deb928',
             confirmButtonColor: '#deb928',
         });
-        addToLocalStorage('carrito',comic);
+        addToLocalStorage('carrito', comic);
         precioFinal();
     })
 });
@@ -66,7 +66,7 @@ const obtenerCarrito = () => {
     let arrayCarrito = JSON.parse(productosEnCarrito) || [];
     let textoComics = '';
     arrayCarrito.forEach(producto => {
-        textoComics = textoComics + ' ' + '<p>' + producto.titulo + ' -    $' + producto.precio + ' - Unid.: '+producto.cantidad +'</p>';
+        textoComics = textoComics + ' ' + '<p>' + producto.titulo + ' -    $' + producto.precio + ' - Unid.: ' + producto.cantidad + '</p>';
     });
     return textoComics;
 }
@@ -79,16 +79,36 @@ function addToLocalStorage(key, producto) {
     //lo convierte en objeto
     let arrayCarrito = JSON.parse(arrayCarritoJson) || [];
     //lo agrega al array
-    arrayCarrito.push(producto);
+
+    arrayProducto = validarProductoRepetido(producto, arrayCarrito);
+    //arrayCarrito.push(producto);
+
     //lo vuelve a hacer un JSON
     arrayCarritoJson = JSON.stringify(arrayCarrito);
     //lo setea en el localStorage
     localStorage.setItem(key, arrayCarritoJson);
 }
 
-const precioFinal = ()=>{
+const validarProductoRepetido = (productoNuevo, arrayCarrito) => {
+    let indice = arrayCarrito.findIndex((prod) =>prod.id === productoNuevo.id);
+    console.log(indice);
+    if(indice !== -1) {
+        console.log("ITEM REPETIDO");
+        arrayCarrito[indice].cantidad++;
+        console.log(arrayCarrito[indice]);
+    }
+    else {
+        console.log("ITEM NUEVO")
+        arrayCarrito.push(productoNuevo);
+    }
+    return arrayCarrito;
+
+}
+
+
+const precioFinal = () => {
     const productosEnCarrito = localStorage.getItem('carrito');
-    const arrayCarrito = JSON.parse(productosEnCarrito)|| [];
+    const arrayCarrito = JSON.parse(productosEnCarrito) || [];
     arrayCarritoJson = JSON.stringify(arrayCarrito);
     const total = arrayCarrito.reduce((acc, comic) => acc + comic.precio, 0);
     console.log(total);
@@ -121,21 +141,21 @@ carrito.addEventListener('click', () => {
         confirmButtonText: 'Continuar comprando',
         denyButtonText: `Finalizar compra`,
     }).then((result) => {
-    if (result.isConfirmed) {
-    } else if (result.isDenied) {
-        Swal.fire({
-            icon: 'success',
-            title: '<h2 class"swal-title">Su compra ha sido realizada con exito</h2>',
-            timer: 5000,
-            position: 'top-end',
-            background: '#242320',
-            iconColor: '#deb928',
-            confirmButtonColor: '#deb928',
-        })
-        localStorage.clear();
-    }
+        if (result.isConfirmed) {
+        } else if (result.isDenied) {
+            Swal.fire({
+                icon: 'success',
+                title: '<h2 class"swal-title">Su compra ha sido realizada con exito</h2>',
+                timer: 5000,
+                position: 'top-end',
+                background: '#242320',
+                iconColor: '#deb928',
+                confirmButtonColor: '#deb928',
+            })
+            localStorage.clear();
+        }
     })
-    }
+}
 )
 
 
