@@ -110,7 +110,7 @@ const precioFinal = () => {
     const productosEnCarrito = localStorage.getItem('carrito');
     const arrayCarrito = JSON.parse(productosEnCarrito) || [];
     arrayCarritoJson = JSON.stringify(arrayCarrito);
-    const total = arrayCarrito.reduce((acc, comic) => acc + comic.precio, 0);
+    const total = arrayCarrito.reduce((acc, comic) => acc + (comic.precio * comic.cantidad), 0);
     console.log(total);
 };
 
